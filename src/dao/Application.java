@@ -3,8 +3,6 @@ package dao;
 import java.util.HashSet;
 import java.util.Set;
 
-import service.AppService;
-
 /**
  * Application entity. @author MyEclipse Persistence Tools
  */
@@ -18,8 +16,8 @@ public class Application implements java.io.Serializable {
 	private String appType;
 	private String appUrl;
 	private String appDesc;
-	private Set userHasApplications = new HashSet(0);
 	private Set parameters = new HashSet(0);
+	private Set userHasApplications = new HashSet(0);
 
 	// Constructors
 
@@ -38,25 +36,15 @@ public class Application implements java.io.Serializable {
 
 	/** full constructor */
 	public Application(String appName, String appType, String appUrl,
-			String appDesc, Set userHasApplications, Set parameters) {
+			String appDesc, Set parameters, Set userHasApplications) {
 		this.appName = appName;
 		this.appType = appType;
 		this.appUrl = appUrl;
 		this.appDesc = appDesc;
-		this.userHasApplications = userHasApplications;
 		this.parameters = parameters;
+		this.userHasApplications = userHasApplications;
 	}
-	
-	public boolean isBelongto(String userid) {
-		
-		AppService appServ = new AppService();
-		
-		if(appServ.find(this.getId(), userid) == null)
-			return false;
-			
-		else return true;
-	}
-	
+
 	// Property accessors
 
 	public Integer getId() {
@@ -99,20 +87,20 @@ public class Application implements java.io.Serializable {
 		this.appDesc = appDesc;
 	}
 
-	public Set getUserHasApplications() {
-		return this.userHasApplications;
-	}
-
-	public void setUserHasApplications(Set userHasApplications) {
-		this.userHasApplications = userHasApplications;
-	}
-
 	public Set getParameters() {
 		return this.parameters;
 	}
 
 	public void setParameters(Set parameters) {
 		this.parameters = parameters;
+	}
+
+	public Set getUserHasApplications() {
+		return this.userHasApplications;
+	}
+
+	public void setUserHasApplications(Set userHasApplications) {
+		this.userHasApplications = userHasApplications;
 	}
 
 }

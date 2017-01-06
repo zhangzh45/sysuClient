@@ -25,8 +25,9 @@ public class UserService{
     }
 	
 	public boolean login(String userid, String password) {
-		String userhandle = wqAdapter.userlogin(userid, password);
-		
+		System.out.print(password+"...\n");
+		String userhandle = wqAdapter.userlogin(userid, password, false);  //不要加密密码
+		System.out.print(userhandle+"sss\n");
 		try {
 			if(this.connected() && wqAdapter.isValidUserSession(userhandle)) {
 				session.put("userhandle", userhandle);

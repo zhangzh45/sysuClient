@@ -88,7 +88,7 @@ public class WorkQueueService{
 		
 		if(this.connected()) {
 			Participant pa = this.getParticipantFromUserid(userid);
-			
+			//Participant pa = this.getParticipantFromUserid(userid); uesrid="admin"时有问题
 			try {
 				
 				if(queueType.equals("offered"))

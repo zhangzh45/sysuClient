@@ -3,7 +3,8 @@ package dao;
 import java.util.List;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
-import org.hibernate.Transaction;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +25,11 @@ public class UserHasSpecificationDAO extends BaseHibernateDAO {
 	private static final Logger log = LoggerFactory
 			.getLogger(UserHasSpecificationDAO.class);
 
+	Session session = HibernateSessionFactory.getSession(); 
 	// property constants
 
 	public void save(UserHasSpecification transientInstance) {
 		log.debug("saving UserHasSpecification instance");
-		Transaction tran=getSession().beginTransaction();
 		try {
 			getSession().save(transientInstance);
 			log.debug("save successful");
@@ -36,15 +37,16 @@ public class UserHasSpecificationDAO extends BaseHibernateDAO {
 			log.error("save failed", re);
 			throw re;
 		}
-		tran.commit();
-        getSession().flush(); 
-        getSession().close();
 	}
 
 	public void delete(UserHasSpecification persistentInstance) {
 		log.debug("deleting UserHasSpecification instance");
 		try {
-			getSession().delete(persistentInstance);
+	        session.beginTransaction();
+	        UserHasSpecification uhs = (UserHasSpecification)session.load(UserHasSpecification.class, persistentInstance.getId()); 
+	        session.delete(uhs);
+	        session.getTransaction().commit();    //同时更新数据库
+			// getSession().delete(persistentInstance);
 			log.debug("delete successful");
 		} catch (RuntimeException re) {
 			log.error("delete failed", re);

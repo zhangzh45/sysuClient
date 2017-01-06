@@ -47,14 +47,18 @@
 						<th>#</th>
 						<th>App Name</th>
 						<th>Description</th>
+						<th>App Type</th>
+						<th>App URL</th>
 						</tr></thead>
 					<tbody>
 						<s:iterator id="app" value="%{apps}">
 						<tr>
 						<td><s:property value="#app.getId()"/></td>
 						<td><s:property value="#app.getAppName()"/></td>
-						<td><s:property value="#app.getAppDesc()"/></td>						
-						<td><a class="btn" href="../app/view.action?appid=<s:property value="#app.getId()"/>">view</a></td>
+						<td><s:property value="#app.getAppDesc()"/></td>
+						<td><s:property value="#app.getAppType()"/></td>
+						<td><s:property value="#app.getAppUrl()"/></td>						
+						<!-- <td><a class="btn" href="../app/view.action?appid=<s:property value="#app.getId()"/>">view</a></td> -->
 						</tr>
 						</s:iterator>
 					</tbody></table></div>

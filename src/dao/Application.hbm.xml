@@ -22,17 +22,17 @@
         <property name="appDesc" type="java.lang.String">
             <column name="appDesc" length="45" not-null="true" />
         </property>
-        <set name="userHasApplications" inverse="true">
-            <key>
-                <column name="application_id" not-null="true" />
-            </key>
-            <one-to-many class="dao.UserHasApplication" />
-        </set>
         <set name="parameters" inverse="true">
             <key>
                 <column name="application_id" not-null="true" />
             </key>
             <one-to-many class="dao.Parameter" />
+        </set>
+        <set name="userHasApplications" inverse="true">
+            <key>
+                <column name="application_id" not-null="true" />
+            </key>
+            <one-to-many class="dao.UserHasApplication" />
         </set>
     </class>
 </hibernate-mapping>

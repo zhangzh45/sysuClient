@@ -18,6 +18,7 @@
             <result name="admin" type="redirectAction">admin/unoffered.action</result>
             <!-- <result name="user" type="redirectAction">workqueue/offered.action</result> -->
             <result name="user" type="redirectAction">new/workqueue.action</result>
+            <result name="error">error.jsp</result>
         </action>
         
         <!-- Add actions here -->
@@ -174,10 +175,10 @@
         	<result name="success">/app/all.jsp</result>
         </action>
         
-        <action name="view" class="action.AppAction" method="view">
+        <!-- <action name="view" class="action.AppAction" method="view">
         	<result name="success">/app/view.jsp</result>
         </action>
-        
+         -->
 	</package>
 	
 	<package name="test" namespace="/" extends="json-default">
@@ -188,6 +189,8 @@
                 <param name="root">result</param>
             </result>
         </action>
+        
+        
         
     </package>
     

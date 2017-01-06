@@ -110,39 +110,38 @@ var apps;
 			url		:	"loadApps.action",
 			dataType:	"json",
 			success	:	function(appsJson) {
-			
 				 apps = JSON.parse(appsJson);
+				 //alert(apps);
 					$("#table_id").DataTable( {
-       data: apps,
-     "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 3 ] }],
-    columns: [
-        { data: 'appid' },
-        { data: 'appName' },
-        { data: 'appType' },
-        { data: 'appDesc' },
-        { data: 'available'}
-    ],
-    "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-			/* Append the grade to the default row class name */
-			var s=aData.available;
-			if ( s=="false")
-			{
-			
-				$('td:eq(4)', nRow).html( "<button   class='btn btn-success btn-xs' onclick='apply(\""+ aData.appid +"\")'>Add</button>");
-				
-			}
-			else if(s=="true"){
-			     $('td:eq(4)', nRow).html("<td><button class='btn btn-warning btn-xs' onclick='unapply(\""+ aData.appid +"\")'>Remove</button></td>");
-			
-			}
-		  else{
-				 $('td:eq(4)', nRow).html("<td><br>Auditing</br></td>");
-		  		    	
-		  }
-		  
-			return nRow;
-		}
-} );
+				       data: apps,
+				     "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 3 ] }],
+				    columns: [
+				        { data: 'appid' },
+				        { data: 'appName' },
+				        { data: 'appType' },
+				        { data: 'appDesc' },
+				        { data: 'available'}
+				    ],
+				    "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+							/* Append the grade to the default row class name */
+							var s=aData.available;
+							if ( s=="false")
+							{
+							
+								$('td:eq(4)', nRow).html( "<button   class='btn btn-success btn-xs' onclick='apply(\""+ aData.appid +"\")'>Add</button>");
+								
+							}
+							else if(s=="true"){
+							     $('td:eq(4)', nRow).html("<td><button class='btn btn-warning btn-xs' onclick='unapply(\""+ aData.appid +"\")'>Remove</button></td>");
+							
+							}else{
+								  $('td:eq(4)', nRow).html("<td><br>Auditing</br></td>");
+							  		    	
+							  }
+						  
+							return nRow;
+						}
+			});
 				
 			}
 		});

@@ -1,20 +1,23 @@
 package action;
 
 import java.util.HashMap;
+
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 import dao.Application;
 import dao.Parameter;
 import service.AppService;
 import service.GetService;
 import service.ParamService;
+import util.specEntity;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -23,7 +26,8 @@ import com.opensymphony.xwork2.ActionSupport;
 public class AppAction extends ActionSupport{
 	
 	private List<Application> apps;
-
+	private List<specEntity> specs;
+	
 	private String dynamicJson;
 	private String appsJson;
 	private String appJson;
@@ -65,8 +69,23 @@ public class AppAction extends ActionSupport{
 		}
 
 		appsJson = json.toString();*/
-		appsJson=getService.getAvailableServiceList(Integer.parseInt((String)session.get("userid")));
+		if((String)session.get("userid") != null){
+			String user =  (String)session.get("userid");
+			if(user.equals("admin")){
+				appsJson=getService.getAvailableServiceList(0); //int userid = 0; 标记管理员
+			}
+			else{
+				appsJson=getService.getAvailableServiceList(Integer.parseInt((String)session.get("userid")));
+			}
+		}
+		
+		//appsJson=getService.getAvailableServiceList(Integer.parseInt((String)session.get("userid")));
 		/*** END ***/
+		System.out.print(appsJson.toString());
+		
+		//apps.clear();
+		apps = getService.parseAppsJson(appsJson.toString());
+		
 		
 		return SUCCESS;
 	}
@@ -92,10 +111,42 @@ public class AppAction extends ActionSupport{
 
 		appsJson = json.toString();		
 		/*** END ***/
-		appsJson=getService.getAllService(Integer.parseInt((String)session.get("userid")));
+		
+		System.out.print((String)session.get("userid")+"!!\n");
+		if((String)session.get("userid") != null){
+			String user =  (String)session.get("userid");
+			if(user.equals("admin")){
+				appsJson=getService.getAllService(0); //int userid = 0; 标记管理员
+			}
+			else{
+				appsJson=getService.getAllService(Integer.parseInt((String)session.get("userid")));
+			}
+		}
+		
+		//apps.clear();
+		apps = getService.parseAppsJson(appsJson.toString());
 		
 		return SUCCESS;
 	}
+	
+	public String getAllSpec() {
+		System.out.print((String)session.get("userid")+"!!\n");
+		if((String)session.get("userid") != null){
+			String user =  (String)session.get("userid");
+			if(user.equals("admin")){
+				appsJson=getService.getAllSpec("0"); //int userid = 0; 标记管理员
+			}
+			else{
+				appsJson=getService.getAllSpec((String)session.get("userid"));
+			}
+		}
+		
+		//apps.clear();
+		specs = getService.parseSpecJson(appsJson.toString());
+		
+		return SUCCESS;
+	}
+	
 	
 	public String addSimpleJson() {
 		appServ.addSimpleApp("simple", appName, appUrl, appDesc);
@@ -229,7 +280,8 @@ public class AppAction extends ActionSupport{
 		}
 		
 		*/
-		Map<String,String> map=getService.getCallService(Integer.parseInt(appid));
+		String userid = (String)session.get("userid");
+		Map<String,String> map=getService.getCallService(Integer.parseInt(appid), userid);
 		appJson = new JSONObject(map).toString();
 		return SUCCESS;
 	}
@@ -244,6 +296,14 @@ public class AppAction extends ActionSupport{
 
 	public void setApps(List<Application> apps) {
 		this.apps = apps;
+	}
+	
+	public List<specEntity> getSpecs() {
+		return specs;
+	}
+
+	public void setSpecs(List<specEntity> specs) {
+		this.specs = specs;
 	}
 
 	public String getAppName() {
