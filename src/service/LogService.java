@@ -13,6 +13,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.json.JSONArray;
 import org.yawlfoundation.yawl.elements.YSpecVersion;
 import org.yawlfoundation.yawl.engine.YSpecificationID;
 import org.yawlfoundation.yawl.engine.interfce.SpecificationData;
@@ -91,7 +92,7 @@ public class LogService{
 					SimpleDateFormat sdf =  new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 					String time = sdf.format(timeLong);
 					
-					if( !eventtype.equals("launch_case") && !eventtype.equals("cancel_case"))
+					if( !eventtype.equals("launch_case") && !eventtype.equals("cancel_case") && !eventtype.equals("cancelled_by_case"))
 						if( mm.get(caseid) == null || this.compare_date(mm.get(caseid).get("time"), time) == -1) {
 							
 							Map<String, String> m = new HashMap<String, String>();
@@ -115,23 +116,80 @@ public class LogService{
     	return mm;
 		
 	}
-
-	public Map<String, Map<String, String>> getCaseLaunchByMe(String userid) {
-		
+	
+	
+	public Map<String, Map<String, String>> getCaseParticipateOfComplete(String userid) {
 		Participant p = workqueueServ.getParticipantFromUserid(userid);
-		
 		Map<String, Map<String, String>> mm = new HashMap<String, Map<String, String>>();
-		
-		if (connected()) {
+    	if (connected()) {
     		try {
     			String xml = rsLogClient.getParticipantHistory(p.getID(), _handle);
-				
 				SAXBuilder sb = new SAXBuilder();
 				Document doc = sb.build(new StringReader(xml));
 				Element root = doc.getRootElement(); //获取根元素 
 				
 				List<?> events = root.getChildren("event");
 				
+				for(Object o : events) {
+								
+					Element event = (Element) o;
+
+					String caseid = event.getChildText("caseid");
+					String itemid = event.getChildText("itemid");
+					String taskid = event.getChildText("taskid");
+					String eventtype = event.getChildText("eventtype");
+					
+					YSpecificationID specID = this.getYSpecificationIDFromKey(event.getChildText("speckey"));
+					SpecificationData specData = this.getSpecData(specID);
+
+					String specname = specData.getName();
+
+					Long timeLong = new Long(event.getChildText("timestamp"));
+					SimpleDateFormat sdf =  new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+					String time = sdf.format(timeLong);
+					
+					if( !eventtype.equals("launch_case") && !eventtype.equals("cancel_case") && !eventtype.equals("cancelled_by_case"))
+						if( mm.get(caseid) == null || this.compare_date(mm.get(caseid).get("time"), time) == -1) {
+							
+							if(eventtype.equalsIgnoreCase("complete")){
+								Map<String, String> m = new HashMap<String, String>();
+								m.put("specname", specname);
+								m.put("itemid", itemid);
+								m.put("taskid", taskid);
+								m.put("type",  eventtype);
+								m.put("time", time);
+								
+								mm.put(caseid, m);
+							}
+						}
+				}
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JDOMException e) {
+				e.printStackTrace();
+			}
+    	}
+    	return mm;
+	}
+	
+	/*public Map<String, Map<String, String>> getCaseLaunchByMe(String userid) {
+		Participant p = workqueueServ.getParticipantFromUserid(userid);
+		
+		System.out.print("p.getID():"+p.getID());
+		
+		Map<String, Map<String, String>> mm = new HashMap<String, Map<String, String>>();
+		
+		if (connected()) {
+    		try {
+    			String xml = rsLogClient.getParticipantHistory(p.getID(), _handle);
+    			System.out.print("xml:"+xml);
+				SAXBuilder sb = new SAXBuilder();
+				Document doc = sb.build(new StringReader(xml));
+				Element root = doc.getRootElement(); //获取根元素 
+				
+				List<?> events = root.getChildren("event");
+				System.out.print("events："+events.size());
 				for(Object o : events) {
 								
 					Element event = (Element) o;
@@ -165,9 +223,50 @@ public class LogService{
 				e.printStackTrace();
 			}
 		}
-		
-		
 		return mm;
+	}*/
+	
+public String getCaseLaunchByMe(String userid) {
+		Participant p = workqueueServ.getParticipantFromUserid(userid);
+		System.out.print("p.getID():"+p.getID());
+		JSONArray mm = new JSONArray();
+		if (connected()) {
+    		try {
+    			String xml = rsLogClient.getParticipantHistory(p.getID(), _handle);
+    			System.out.print("xml:"+xml);
+				SAXBuilder sb = new SAXBuilder();
+				Document doc = sb.build(new StringReader(xml));
+				Element root = doc.getRootElement(); //获取根元素 
+				
+				List<?> events = root.getChildren("event");
+				System.out.print("events："+events.size());
+				for(Object o : events) {
+								
+					Element event = (Element) o;
+					String caseid = event.getChildText("caseid");
+					String eventtype = event.getChildText("eventtype");
+					YSpecificationID specID = this.getYSpecificationIDFromKey(event.getChildText("speckey"));
+					SpecificationData specData = this.getSpecData(specID);
+					String specname = specData.getName();
+					Long timeLong = new Long(event.getChildText("timestamp"));
+					SimpleDateFormat sdf =  new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+					String time = sdf.format(timeLong);
+					if( eventtype.equals("launch_case") || eventtype.equals("cancel_case") || eventtype.equals("cancelled_by_case")) {
+						Map<String, String> m = new HashMap<String, String>();
+						m.put("specname", specname);
+						m.put("type",  eventtype);
+						m.put("time", time);
+						m.put("caseid", caseid);
+						mm.put(m);
+					}
+				}
+    		} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JDOMException e) {
+				e.printStackTrace();
+			}
+		}
+		return mm.toString();
 	}
 	
 

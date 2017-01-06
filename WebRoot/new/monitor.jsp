@@ -51,11 +51,11 @@
 						<table class="table table-striped table-condensed">
 					      <thead>
 							<tr>
+							<!-- <th>Identifier</th> -->
 							<th>SpecName</th>
 							<th>Version</th>
 							<th>URI</th>
 							<th>Documentation</th>
-							<th>Cases</th>
 							</tr></thead>
 						<tbody id="tbody1">
 		
@@ -80,7 +80,7 @@
 						<tr>
 						<th>SpecName</th>
 						<th>Version</th>
-						<th>Status</th>
+						<!-- <th>Status</th> -->
 						<th>URI</th>
 						<th>Documentation</th>	
 						<th>Actions</th>
@@ -140,7 +140,7 @@
 			str.append("<td style='display:none'>"+this.identifier+"</td>");
 			str.append("<td>"+this.name+"</td>");
 			str.append("<td>"+this.version+"</td>");
-			str.append("<td>"+this.status+"</td>");
+			//str.append("<td>"+this.status+"</td>");
 			str.append("<td>"+this.uri+"</td>");
 			str.append("<td>"+this.documentation+"</td>");
 
@@ -160,7 +160,7 @@
 			str.append("<td style='display:none'>"+this.identifier+"</td>");
 			str.append("<td>"+this.name+"</td>");
 			str.append("<td>"+this.version+"</td>");
-			str.append("<td>"+this.status+"</td>");
+			//str.append("<td>"+this.status+"</td>");
 			str.append("<td>"+this.uri+"</td>");
 			str.append("<td>"+this.documentation+"</td>");
 			str.append("<td><button class='btn btn-default btn-xs' onclick='unfollow(\""+this.identifier+"\")'>Unfollow</button></td>");
@@ -173,7 +173,7 @@
 			str.append("<td style='display:none'>"+this.identifier+"</td>");
 			str.append("<td>"+this.name+"</td>");
 			str.append("<td>"+this.version+"</td>");
-			str.append("<td>"+this.status+"</td>");
+			//str.append("<td>"+this.status+"</td>");
 			str.append("<td>"+this.uri+"</td>");
 			str.append("<td>"+this.documentation+"</td>");
 			str.append("<td><button class='btn btn-default btn-xs' onclick='follow(\""+this.identifier+"\")'>Follow</button></td>");
@@ -183,10 +183,22 @@
 	}
 	
 	function follow(identifier) {
-		alert(identifier);
+		//alert(identifier);
 		
 		$.ajax({
 			url		:	"follow.action",
+			data	:	"selectedSpec="+identifier,
+			type	:	"post",
+			dataType:	"json",
+			success	:	updateTable
+		});	
+	}
+	
+	function unfollow(identifier) {
+		//alert(identifier);
+		
+		$.ajax({
+			url		:	"unfollow.action",
 			data	:	"selectedSpec="+identifier,
 			type	:	"post",
 			dataType:	"json",

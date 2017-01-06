@@ -29,7 +29,9 @@ public class SpecificationDAO extends BaseHibernateDAO {
 
 	public void save(Specification transientInstance) {
 		log.debug("saving Specification instance");
+		System.out.print("getSession():"+getSession());
 		Transaction tran=getSession().beginTransaction();
+		
 		try {
 			getSession().save(transientInstance);
 			log.debug("save successful");
@@ -44,6 +46,7 @@ public class SpecificationDAO extends BaseHibernateDAO {
 
 	public void delete(Specification persistentInstance) {
 		log.debug("deleting Specification instance");
+		Transaction tran=getSession().beginTransaction();
 		try {
 			getSession().delete(persistentInstance);
 			log.debug("delete successful");
@@ -51,6 +54,9 @@ public class SpecificationDAO extends BaseHibernateDAO {
 			log.error("delete failed", re);
 			throw re;
 		}
+		tran.commit();
+        getSession().flush(); 
+        getSession().close();
 	}
 
 	public Specification findById(java.lang.Integer id) {

@@ -51,12 +51,12 @@
 				    	<div class="panel-body">
 				    		<p>
 							<button class="btn btn-sm btn-success" id="testbtn">全部时间范围</button>
-							<button class="btn btn-sm btn-default" id="testbtn">今天</button>
-							<button class="btn btn-sm btn-default" id="testbtn">昨天</button>
-							<button class="btn btn-sm btn-default" id="testbtn">一周以内</button>
-							<button class="btn btn-sm btn-default" id="testbtn">更早</button>
+							<button class="btn btn-sm btn-default" id="testbtn"  style="background:white" onclick="loadCasesWithinToday()">今天</button>
+							<button class="btn btn-sm btn-default" id="testbtn" style="background:white" onclick="loadCasesWithinYesterday()">昨天</button>
+							<button class="btn btn-sm btn-default" id="testbtn" style="background:white" onclick="loadCasesWithinAWeek()">一周以内</button>
+							<button class="btn btn-sm btn-default" id="testbtn" style="background:white" onclick="loadEarlierCases()">更早</button>
 
-							<button class="btn btn-sm btn-default pull-right" id="completed">已经完成的</button>
+							<button class="btn btn-sm btn-default pull-right" id="completed" style="background:white" onclick="loadCompletedCases()">已经完成的</button>
 							</p>
 
 							<hr/>
@@ -91,10 +91,10 @@
 				    	<div class="panel-body">
 				    		<p>
 							<button class="btn btn-sm btn-success" id="testbtn">全部时间范围</button>
-							<button class="btn btn-sm btn-default" id="testbtn">今天</button>
-							<button class="btn btn-sm btn-default" id="testbtn">昨天</button>
-							<button class="btn btn-sm btn-default" id="testbtn">一周以内</button>
-							<button class="btn btn-sm btn-default" id="testbtn">更早</button>
+							<button class="btn btn-sm btn-default" id="testbtn" style="background:white" onclick="loadMyCasesWithinToday()">今天</button>
+							<button class="btn btn-sm btn-default" id="testbtn" style="background:white" onclick="loadMyCasesWithinYesterday()">昨天</button>
+							<button class="btn btn-sm btn-default" id="testbtn" style="background:white" onclick="loadMyCasesWithinAWeek()">一周以内</button>
+							<button class="btn btn-sm btn-default" id="testbtn" style="background:white" onclick="loadMyEarlierCases()">更早</button>
 							</p>
 							<hr/>
 							
@@ -133,7 +133,10 @@
     <script src="js/offcanvas.js"></script>
     <script type="text/javascript">
     $(function(){
+    
 		$("#nav-workdesk").addClass("active");
+		
+		var completed = "false";
 		
 		updateTable();
 		
@@ -150,19 +153,369 @@
 			type	:	"post",
 			dataType:	"json",
 			success	:	updateTable1
-			});
+		});
 			
 		$.ajax({
 			url		:	"loadMineCases.action",
 			type	:	"post",
 			dataType:	"json",
 			success	:	updateTable2
-			});			
+		});			
+	}
+	
+	function loadCompletedCases() {
+	//alert($('#completed').style.background);
+		//if($('#completed').)
+		if(document.getElementById("completed").style.background == "green"){
+			$.ajax({
+				url		:	"loadCases.action",
+				type	:	"post",
+				dataType:	"json",
+				success	:	updateTable1
+			});
+			document.getElementById("completed").style.background = "white";
+			completed = "false";
+		}
+		else if(document.getElementById("completed").style.background == "white"){
+			$.ajax({
+				url		:	"loadCompletedCases.action",
+				type	:	"post",
+				dataType:	"json",
+				success	:	updateTable1
+			});	
+			document.getElementById("completed").style.background = "green";
+			completed = "true";
+		}
+	}
+	
+	function loadCasesWithinToday() {
+		var today = formatDate(new Date());
+		var date = today.substring(0, today.indexOf(" "));
+		if(completed == "true"){
+			$.ajax({
+				url		:	"loadCompletedCases.action",
+				type	:	"post",
+				dataType:	"json",
+				success	:	function(casesJson) {
+								var cases = JSON.parse(casesJson);
+								//alert(casesJson);
+								$("#tbody1").empty();
+								$(cases).each(function() {
+									if(this.time.indexOf(date) >= 0){
+										var str = $('<tr/>');
+										str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+										str.append("<td>"+this.taskid+"</td>");
+										str.append("<td>"+this.itemid+"</td>");
+										str.append("<td>"+this.type+"</td>");
+										str.append("<td>"+this.time+"</td>");
+										str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+										$("#tbody1").append(str);
+									}
+								});
+							}
+			});
+		}
+		else{
+			$.ajax({
+				url		:	"loadCases.action",
+				type	:	"post",
+				dataType:	"json",
+				success	:	function(casesJson) {
+								var cases = JSON.parse(casesJson);
+								//alert(casesJson);
+								$("#tbody1").empty();
+								$(cases).each(function() {
+									if(this.time.indexOf(date) >= 0){
+										var str = $('<tr/>');
+										str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+										str.append("<td>"+this.taskid+"</td>");
+										str.append("<td>"+this.itemid+"</td>");
+										str.append("<td>"+this.type+"</td>");
+										str.append("<td>"+this.time+"</td>");
+										str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+										$("#tbody1").append(str);
+									}
+								});
+							}
+			});
+		}
+	}
+	
+	function loadCasesWithinYesterday() {
+		var dt = new Date();
+		dt.setDate(dt.getDate() - 1);   //昨天
+		var yesterday = formatDate(dt);
+		var date = yesterday.substring(0, yesterday.indexOf(" "));
+		//alert(date);
+		if(completed == "true"){
+			$.ajax({
+				url		:	"loadCompletedCases.action",
+				type	:	"post",
+				dataType:	"json",
+				success	:	function(casesJson) {
+								var cases = JSON.parse(casesJson);
+								//alert(casesJson);
+								$("#tbody1").empty();
+								$(cases).each(function() {
+									if(this.time.indexOf(date) >= 0){
+										var str = $('<tr/>');
+										str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+										str.append("<td>"+this.taskid+"</td>");
+										str.append("<td>"+this.itemid+"</td>");
+										str.append("<td>"+this.type+"</td>");
+										str.append("<td>"+this.time+"</td>");
+										str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+										$("#tbody1").append(str);
+									}
+								});
+							}
+			});
+		}
+		else{
+			$.ajax({
+				url		:	"loadCases.action",
+				type	:	"post",
+				dataType:	"json",
+				success	:	function(casesJson) {
+								var cases = JSON.parse(casesJson);
+								//alert(casesJson);
+								$("#tbody1").empty();
+								$(cases).each(function() {
+									if(this.time.indexOf(date) >= 0){
+										var str = $('<tr/>');
+										str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+										str.append("<td>"+this.taskid+"</td>");
+										str.append("<td>"+this.itemid+"</td>");
+										str.append("<td>"+this.type+"</td>");
+										str.append("<td>"+this.time+"</td>");
+										str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+										$("#tbody1").append(str);
+									}
+								});
+							}
+			});
+		}
+	}
+	
+	function loadCasesWithinAWeek() {
+		var dt = new Date();
+		dt.setDate(dt.getDate() - 7);   //昨天
+		var week = formatDate(dt);
+		var date = week.substring(0, week.indexOf(" "));
+		//alert(date);
+		if(completed == "true"){
+			$.ajax({
+				url		:	"loadCompletedCases.action",
+				type	:	"post",
+				dataType:	"json",
+				success	:	function(casesJson) {
+								var cases = JSON.parse(casesJson);
+								//alert(casesJson);
+								$("#tbody1").empty();
+								$(cases).each(function() {
+									if(this.time >= date){
+										var str = $('<tr/>');
+										str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+										str.append("<td>"+this.taskid+"</td>");
+										str.append("<td>"+this.itemid+"</td>");
+										str.append("<td>"+this.type+"</td>");
+										str.append("<td>"+this.time+"</td>");
+										str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+										$("#tbody1").append(str);
+									}
+								});
+							}
+			});
+		}
+		else{
+			$.ajax({
+				url		:	"loadCases.action",
+				type	:	"post",
+				dataType:	"json",
+				success	:	function(casesJson) {
+								var cases = JSON.parse(casesJson);
+								//alert(casesJson);
+								$("#tbody1").empty();
+								$(cases).each(function() {
+									if(this.time >= date){
+										var str = $('<tr/>');
+										str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+										str.append("<td>"+this.taskid+"</td>");
+										str.append("<td>"+this.itemid+"</td>");
+										str.append("<td>"+this.type+"</td>");
+										str.append("<td>"+this.time+"</td>");
+										str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+										$("#tbody1").append(str);
+									}
+								});
+							}
+			});
+		}
+	}
+	
+	
+	function loadEarlierCases(){
+		var dt = new Date();
+		dt.setDate(dt.getDate() - 7);   //昨天
+		var week = formatDate(dt);
+		var date = week.substring(0, week.indexOf(" "));
+		if(completed == "true"){
+			$.ajax({
+				url		:	"loadCompletedCases.action",
+				type	:	"post",
+				dataType:	"json",
+				success	:	function(casesJson) {
+								var cases = JSON.parse(casesJson);
+								//alert(casesJson);
+								$("#tbody1").empty();
+								$(cases).each(function() {
+									if(this.time < date){
+										var str = $('<tr/>');
+										str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+										str.append("<td>"+this.taskid+"</td>");
+										str.append("<td>"+this.itemid+"</td>");
+										str.append("<td>"+this.type+"</td>");
+										str.append("<td>"+this.time+"</td>");
+										str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+										$("#tbody1").append(str);
+									}
+								});
+							}
+			});
+		}
+		else{
+			$.ajax({
+				url		:	"loadCases.action",
+				type	:	"post",
+				dataType:	"json",
+				success	:	function(casesJson) {
+								var cases = JSON.parse(casesJson);
+								//alert(casesJson);
+								$("#tbody1").empty();
+								$(cases).each(function() {
+									if(this.time < date){
+										var str = $('<tr/>');
+										str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+										str.append("<td>"+this.taskid+"</td>");
+										str.append("<td>"+this.itemid+"</td>");
+										str.append("<td>"+this.type+"</td>");
+										str.append("<td>"+this.time+"</td>");
+										str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+										$("#tbody1").append(str);
+									}
+								});
+							}
+			});
+		}
+	}
+	
+	function loadMyCasesWithinToday(){
+		var today = formatDate(new Date());
+		var date = today.substring(0, today.indexOf(" "));
+		$.ajax({
+			url		:	"loadMineCases.action",
+			type	:	"post",
+			dataType:	"json",
+			success	:	function(casesJson) {
+							var cases = JSON.parse(casesJson);
+							$("#tbody2").empty();
+							$(cases).each(function() {
+								if(this.time.indexOf(date) >= 0){
+									var str = $('<tr/>');
+									str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+									str.append("<td>"+this.type+"</td>");
+									str.append("<td>"+this.time+"</td>");
+									str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+									$("#tbody2").append(str);	
+								}
+							});
+						}
+			});
+	}
+	
+	function loadMyCasesWithinYesterday(){
+		var dt = new Date();
+		dt.setDate(dt.getDate() - 1);   //昨天
+		var yesterday = formatDate(dt);
+		var date = yesterday.substring(0, yesterday.indexOf(" "));
+		$.ajax({
+			url		:	"loadMineCases.action",
+			type	:	"post",
+			dataType:	"json",
+			success	:	function(casesJson) {
+							var cases = JSON.parse(casesJson);
+							$("#tbody2").empty();
+							$(cases).each(function() {
+								if(this.time.indexOf(date) >= 0){
+									var str = $('<tr/>');
+									str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+									str.append("<td>"+this.type+"</td>");
+									str.append("<td>"+this.time+"</td>");
+									str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+									$("#tbody2").append(str);	
+								}
+							});
+						}
+			});
+	}
+	
+	function loadMyCasesWithinAWeek(){
+		var dt = new Date();
+		dt.setDate(dt.getDate() - 7); 
+		var week = formatDate(dt);
+		var date = week.substring(0, week.indexOf(" "));
+		$.ajax({
+			url		:	"loadMineCases.action",
+			type	:	"post",
+			dataType:	"json",
+			success	:	function(casesJson) {
+							var cases = JSON.parse(casesJson);
+							$("#tbody2").empty();
+							$(cases).each(function() {
+								if(this.time >= date){
+									var str = $('<tr/>');
+									str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+									str.append("<td>"+this.type+"</td>");
+									str.append("<td>"+this.time+"</td>");
+									str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+									$("#tbody2").append(str);	
+								}
+							});
+						}
+			});
+	}
+	
+	function loadMyEarlierCases(){
+		var dt = new Date();
+		dt.setDate(dt.getDate() - 7);   //昨天
+		var week = formatDate(dt);
+		var date = week.substring(0, week.indexOf(" "));
+		$.ajax({
+				url		:	"loadMineCases.action",
+				type	:	"post",
+				dataType:	"json",
+				success	:	function(casesJson) {
+								var cases = JSON.parse(casesJson);
+								//alert(casesJson);
+								$("#tbody2").empty();
+								$(cases).each(function() {
+									if(this.time < date){
+										var str = $('<tr/>');
+										str.append("<td>"+this.specname+": "+this.caseid+"</td>");
+										str.append("<td>"+this.type+"</td>");
+										str.append("<td>"+this.time+"</td>");
+										str.append("<td><button class='btn btn-default btn-xs' onclick='history(\""+this.caseid+"\")'>view</button></td>");
+										$("#tbody2").append(str);
+									}
+								});
+							}
+			});
 	}
 	
 	function updateTable1(casesJson) {
 		var cases = JSON.parse(casesJson);
-		
+		//alert(casesJson);
+		$("#tbody1").empty();
 		$(cases).each(function() {
 			var str = $('<tr/>');
 			str.append("<td>"+this.specname+": "+this.caseid+"</td>");
@@ -177,7 +530,7 @@
 	
 	function updateTable2(mineCasesJson) {
 		var cases = JSON.parse(mineCasesJson);
-		
+		//alert(mineCasesJson);
 		$(cases).each(function() {
 			var str = $('<tr/>');
 			str.append("<td>"+this.specname+": "+this.caseid+"</td>");
@@ -241,6 +594,21 @@
 
 	}
 	
+	function formatDate(date) {  
+	    var y = date.getFullYear();  
+	    var m = date.getMonth() + 1;  
+	    m = m < 10 ? ('0' + m) : m;  
+	    var d = date.getDate();  
+	    d = d < 10 ? ('0' + d) : d;  
+	    var h = date.getHours(); 
+	    h = h < 10 ? ('0' + h) : h;  
+	    var minute = date.getMinutes();  
+	    minute = minute < 10 ? ('0' + minute) : minute;
+	    var second = date.getSeconds();  
+	    second = second < 10 ? ('0' + second) : second;
+	    return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;  
+	}
+		
     </script>
     
   </body>

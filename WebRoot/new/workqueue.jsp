@@ -1136,7 +1136,7 @@
 			dataType:	"json",
 			success	:	function(appJson) {
 				var app = JSON.parse(appJson);
-				
+				//alert(app.userid);
 				var fade = $('<div class="modal fade" id="app" tabindex="-1"/>');
 				var dialog = $('<div class="modal-dialog"/>');		
 				var content = $('<div class="modal-content"/>');
@@ -1149,29 +1149,59 @@
 				body.append("<div class='col-sm-10'><p>"+app.desc+"</p></div>");
 				var footer = $('<div class="modal-footer"/>');
 				footer.append("<button class='btn btn-default' data-dismiss='modal'>Close</button>");
-
-				if(app.type == 'URL'){
 				
-					footer.append("<button class='btn btn-primary' onClick='window.open(\""+ app.url +"\")'>点击查看</button>");			
-				
-				} else {
-					
-					var params = JSON.parse(app.params);
-					
-					var form = $('<form class="form-horizontal" id="callForm"/>');
-					
-					for (var key in params) {
-					
-						var formgroup = $('<div class="form-group"/>');
-						formgroup.append("<label class='col-sm-2 control-label'>"+ key +"</label>");
-						formgroup.append("<div class='col-sm-10'><input type='text' name='"+ key +"' class='form-control'><span class='help-block'>DataType: "+ params[key] +"</span></div>");
-
-						form.append(formgroup);
+				var serviceaddress = "";
+				if(app.query != "null"){
+					if(app.url.lastIndexOf("/") == app.url.length - 1){
+						serviceaddress = app.url + app.query;
+					}else{
+						serviceaddress = app.url + "/" + app.query;
 					}
-									
+				}else{
+					serviceaddress = app.url;
+				}
+				
+				//if(app.type == 'URL'){
+				if(!app.hasOwnProperty("params") && !app.hasOwnProperty("vars") && !app.hasOwnProperty("subparams")){
+					var serviceurl = "http://localhost:8020/SSH_Prototype_J2EE_5.0/accessService.jsp?userid="+app.userid+"&serviceid="+appid+"&serviceaddress="+serviceaddress;
+				
+					//alert(serviceurl);
+					footer.append("<button class='btn btn-primary' onClick='window.open(\""+ serviceurl +"\")'>点击调用</button>");			
+				
+					//footer.append("<button class='btn btn-primary' onClick='window.open(\""+ app.url +"\")'>点击查看</button>");			
+				
+				} 
+				else {
+					var form = $('<form class="form-horizontal" id="callForm"/>');
+					var formgroup = $('<div class="form-group"/>');
+					if(app.hasOwnProperty("params")){
+						var params = JSON.parse(app.params);
+						for (var key in params) {
+							formgroup.append("<label class='col-sm-2 control-label'>"+ key +"</label>");
+							formgroup.append("<div class='col-sm-10'><input type='text' name='"+ key +"' class='form-control'><span class='help-block'>ParamType: "+ params[key] +"</span></div>");
+						}
+					}
+					if(app.hasOwnProperty("vars")){
+						var vars = JSON.parse(app.vars);
+						for (var key in vars) {
+							formgroup.append("<label class='col-sm-2 control-label'>"+ key +"</label>");
+							formgroup.append("<div class='col-sm-10'><input type='text' name='"+ key +"' class='form-control'><span class='help-block'>VarDesc: "+ vars[key] +"</span></div>");
+	
+						}
+					}
+					if(app.hasOwnProperty("subparams")){
+						var subparams = JSON.parse(app.subparams);
+						for (var key in subparams) {
+							formgroup.append("<label class='col-sm-2 control-label'>"+ key +"</label>");
+							formgroup.append("<div class='col-sm-10'><input type='text' name='"+ key +"' class='form-control'><span class='help-block'>ParamType: "+ subparams[key] +"</span></div>");
+						}
+					}
+					form.append(formgroup);
+					
 					body.append(form);
 					
-					footer.append("<button class='btn btn-primary' onclick='callWebServ(\""+ appid +"\")'>点击查询</button>");
+					footer.append("<button class='btn btn-primary' onclick='callWebServ(\""+ appid +"\", \""+serviceaddress+"\")'>点击调用</button>");
+
 					
 				}
 								
@@ -1191,16 +1221,24 @@
 
 	}
 	
-	function callWebServ(appid){
+	function callWebServ(appid, appurl){
+		//alert($("#callForm").serialize());
 		$.ajax({
 			url		:	"callWebServ.action",
-			data	:	$("#callForm").serialize(),
+			//data	:	$("#callForm").serialize(),
+			data	:	{"params": $("#callForm").serialize()},
 			type	:	"post",
-			dataType:	"json",
+			//dataType:	"json",
 			success	:	function(resultJson) {
 				var result = JSON.parse(resultJson);
-				$("#callBody").empty();
-				$("#callBody").append("<p>"+ result.result +"</p>");
+				//alert(result.userid+"  "+appid+"   "+appurl+"   "+result.params);
+				var accessurl = "http://localhost:8020/SSH_Prototype_J2EE_5.0/accessService.jsp?userid="+result.userid+"&serviceid="+appid+"&serviceaddress="+appurl+"?"+result.params;
+				//alert(accessurl);
+				window.open(accessurl);
+				
+				//$("#callBody").empty();
+				//$("#callBody").append("<p>"+ result.result +"</p>");
+				
 			}
 		});
 	}
