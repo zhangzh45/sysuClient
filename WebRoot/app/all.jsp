@@ -46,13 +46,15 @@
 						<th>#</th>
 						<th>App Name</th>
 						<th>Description</th>
+						<th>App Type</th>
 						</tr></thead>
 					<tbody>
 						<s:iterator id="app" value="%{apps}">
 						<tr>
 						<td><s:property value="#app.getId()"/></td>
 						<td><s:property value="#app.getAppName()"/></td>
-						<td><br><br></td>
+						<td><s:property value="#app.getAppDesc()"/></td>
+						<td><s:property value="#app.getAppType()"/></td>
 						
 						<!-- 获取session中的userid，判断当前登录user是否已经申请了该app -->
 						<s:set name="userid" value="#session.userid" />

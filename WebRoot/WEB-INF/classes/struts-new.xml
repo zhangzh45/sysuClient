@@ -71,6 +71,12 @@
             </result>
         </action>
         
+        <action name="loadCompletedCases" class="action.CaseAction" method="participateOfComplete">
+            <result type="json">
+                <param name="root">casesJson</param>
+            </result>
+        </action>
+        
        	<action name="loadMineCases" class="action.CaseAction" method="launchByMe">
             <result type="json">
                 <param name="root">mineCasesJson</param>
@@ -83,7 +89,7 @@
             </result>        
         </action>
         
-        <action name="loadSpecs" class="action.SpecAction" method="allSpecs">
+        <action name="getMySpec" class="action.SpecAction" method="getMySpec">
         	<result type="json">
         		<param name="root">specsJson</param>
         	</result>
@@ -102,6 +108,10 @@
         </action>
         
         <action name="follow" class="action.SpecAction" method="follow">
+        	<result type="json"></result>
+        </action>
+        
+        <action name="unfollow" class="action.SpecAction" method="unfollow">
         	<result type="json"></result>
         </action>
         
@@ -148,6 +158,18 @@
         <action name="view" class="action.WorkItemAction" method="viewJson">
         	<result type="json">
         		<param name="root">paramsJson</param>
+        	</result>
+        </action>
+        
+         <action name="getSpecInfo" class="action.SpecAction" method="getSpecInfo">
+            <result type="json">
+        		<param name="root">SpecInfoJson</param>
+        	</result>
+        </action>
+        
+        <action name="downloadLog" class="action.SpecAction" method="downloadLog">
+            <result type="json">
+        		<param name="root">SpecInfoJson</param>
         	</result>
         </action>
         
@@ -208,6 +230,12 @@
 	<package name="app" namespace="/new" extends="json-default">
 
         <action name="loadApps" class="action.AppAction" method="all">
+            <result type="json">
+                <param name="root">appsJson</param>
+            </result>
+        </action>
+        
+        <action name="getAllSpec" class="action.AppAction" method="getAllSpec">
             <result type="json">
                 <param name="root">appsJson</param>
             </result>

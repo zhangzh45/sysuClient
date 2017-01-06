@@ -7,8 +7,10 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.yawlfoundation.yawl.elements.YAWLServiceReference;
 
+import service.GetService;
 import service.ServiceService;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 @SuppressWarnings("serial")
@@ -56,9 +58,23 @@ public class ServiceAction extends ActionSupport {
 	}
 	
 	public String register() {
+
 		System.out.println(serviceURI+","+ serviceName+","+ servicePwd+","+ serviceDoc);
 		String result = serviceService.addRegisteredService(serviceURI, serviceName, servicePwd, serviceDoc);
 		System.out.println(result);
+		
+		if(result.startsWith("<failure>") == false){
+			//注册服务到服务管理中心
+			GetService gs = new GetService();
+			Map<String, Object> session = ActionContext.getContext().getSession();
+			int userId = Integer.parseInt((String)session.get("userid"));
+			try {
+				gs.registerService(userId, serviceName, serviceURI, serviceDoc);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		Set<YAWLServiceReference> servs = serviceService.getRegisteredService();
 		
@@ -82,6 +98,18 @@ public class ServiceAction extends ActionSupport {
 	}
 	
 	public String remove() {
+		//服务管理中心同时删除该服务
+		GetService gs = new GetService();
+		try {
+			gs.removeService(Integer.parseInt(selectedSerivce));
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		serviceService.removeRegisteredService(selectedSerivce);
 		Set<YAWLServiceReference> servs = serviceService.getRegisteredService();
 		

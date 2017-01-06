@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.yawlfoundation.yawl.engine.YSpecificationID;
 import org.yawlfoundation.yawl.engine.interfce.SpecificationData;
 
+import service.GetService;
 import service.SpecService;
 import service.LogService;
 
@@ -70,7 +71,18 @@ public class CaseAction extends ActionSupport {
 	
 	public String launchSpec() {
 		YSpecificationID yid = new YSpecificationID(identifier, version, uri);
-		specServ.launchCase(yid);
+		String result = specServ.launchCase(yid);
+	
+		//记录日志到服务管理中心
+		GetService gs = new GetService();
+		String userid = (String) session.get("userid");
+		try {
+			gs.launchSpec(userid, identifier, version, uri, result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		JSONArray ja = new JSONArray();
 		
@@ -109,6 +121,8 @@ public class CaseAction extends ActionSupport {
 						m.put("id", caseid);
 						m.put("specname", s.getName());
 						m.put("specversion", s.getSpecVersion());
+						m.put("specuri", s.getSpecURI());
+						m.put("specidentifier", s.getID().getIdentifier());
 						ja.put(m);
 					}
 					
@@ -121,7 +135,19 @@ public class CaseAction extends ActionSupport {
 	}
 	
 	public String cancelCase() {
-		specServ.cancelCase(selectedCase);
+		String result = specServ.cancelCase(selectedCase);
+
+		System.out.print("\nresult:"+result+"identifier:"+identifier+"version:"+version+"uri:"+uri+"\n");
+		
+		//距离cancel流程日志到服务管理中心
+		GetService gs = new GetService();
+		String userid = (String) session.get("userid");
+		try {
+			gs.cancelSpec(userid, identifier, version, uri, result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		JSONArray ja = new JSONArray();
 		
@@ -196,11 +222,17 @@ public class CaseAction extends ActionSupport {
 		return SUCCESS;		
 	}
 	
+	public String participateOfComplete() {
+		Map<String, Map<String, String>> map = logServ.getCaseParticipateOfComplete((String) session.get("userid"));
+		casesJson = this.toJson(map);
+		return SUCCESS;		
+	}
+	
 	public String launchByMe() {
+		//Map<String, Map<String, String>> map = logServ.getCaseLaunchByMe((String) session.get("userid"));
+		//mineCasesJson = this.toJson(map);	
 		
-		Map<String, Map<String, String>> map = logServ.getCaseLaunchByMe((String) session.get("userid"));
-		
-		mineCasesJson = this.toJson(map);	
+		mineCasesJson = logServ.getCaseLaunchByMe((String) session.get("userid"));
 		
 		return SUCCESS;
 	}

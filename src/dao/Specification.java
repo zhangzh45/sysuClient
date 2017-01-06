@@ -1,5 +1,8 @@
 package dao;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Specification entity. @author MyEclipse Persistence Tools
  */
@@ -12,6 +15,7 @@ public class Specification implements java.io.Serializable {
 	private String identifier;
 	private String specXml;
 
+	private Set userHasSpecifications = new HashSet(0);
 	// Constructors
 
 	/** default constructor */
@@ -54,4 +58,13 @@ public class Specification implements java.io.Serializable {
 		this.specXml = specXml;
 	}
 
+	public Set getUserHasSpecifications() {
+		return userHasSpecifications;
+	}
+
+	public void setUserHasSpecifications(Set userHasSpecifications) {
+		this.userHasSpecifications = userHasSpecifications;
+	}
+	
+	
 }
