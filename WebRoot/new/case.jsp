@@ -213,7 +213,7 @@
 			type	:	"post",
 			dataType:	"json",
 			success	:	function(){
-				updateSpecQueuee();
+				//updateSpecQueuee();
 				$.ajax({
 					url		:	"getMySpec.action",
 					type	:	"post",
@@ -232,7 +232,7 @@
 			type	:	"post",
 			dataType:	"json",
 			success	:	function(){
-				updateSpecQueuee();
+				//updateSpecQueuee();
 				$.ajax({
 					url		:	"getMySpec.action",
 					type	:	"post",
