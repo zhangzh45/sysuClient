@@ -19,6 +19,21 @@ public class UserAction extends ActionSupport{
 	private String passwd;
 	private UserService userService = new UserService();
 	//private GetService getService=new GetService();
+	
+	
+	String rolesJson;
+	
+	
+
+	public String getRolesJson() {
+		return rolesJson;
+	}
+
+
+	public void setRolesJson(String rolesJson) {
+		this.rolesJson = rolesJson;
+	}
+
 
 	public String signin() {	
 	// test t=new test();
@@ -74,6 +89,12 @@ public class UserAction extends ActionSupport{
 		
 		else return "error"; 
 
+	}
+	
+	
+	public String getAllRole(){
+		rolesJson = userService.getRole(userid, passwd);
+		return "success";
 	}
 
 	/*************************************************/

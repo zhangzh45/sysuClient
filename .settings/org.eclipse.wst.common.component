@@ -3,6 +3,7 @@
     <wb-module deploy-name="sysuClient">
         <wb-resource deploy-path="/" source-path="/WebRoot"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/.apt_generated"/>
         <property name="context-root" value="/sysuClient"/>
         <property name="java-output-path" value="/sysuClient/WebRoot/WEB-INF/classes"/>
     </wb-module>

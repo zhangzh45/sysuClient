@@ -39,6 +39,15 @@
 	
 	<package name="Json" namespace="/new" extends="json-default">
         
+        
+        <!-- 获取角色 -->
+        <action name="getAllRole" class="action.UserAction" method="getAllRole">
+            <result type="json">
+                <param name="root">rolesJson</param>
+            </result>
+        </action>
+        
+        
 		<!-- 加载四个队列 -->
        	<action name="loadStartedQueue" class="action.WorkQueueAction" method="loadStarted">
             <result type="json">
