@@ -39,7 +39,7 @@ public class UserService{
 			if(this.connected() && wqAdapter.isValidUserSession(userhandle)) {
 				session.put("userhandle", userhandle);
 				session.put("userid", userid);
-
+				session.put("password", password);
 				return true;
 			}
 		} catch (IOException e) {

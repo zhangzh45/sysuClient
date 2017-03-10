@@ -44,6 +44,7 @@ public class UserAction extends ActionSupport{
 			Map<String, Object> session = ActionContext.getContext().getSession();
 			//session.put("userid", "0");  //标记管理员
 			session.put("userid", userid);
+			session.put("password", "YAWL");
 			return "admin";
 		}
 		

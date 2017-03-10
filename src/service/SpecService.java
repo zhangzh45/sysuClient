@@ -134,8 +134,9 @@ public class SpecService{
 					 */
 					String servicename = fileName.substring(0, fileName.lastIndexOf("."));
 					String userid = (String)session.get("userid");
+					String password = (String)session.get("password");
 					GetService gs = new GetService();
-					boolean register = gs.registerSpecToSSH(userid, servicename, xml);
+					boolean register = gs.registerSpecToSSH(userid, password, servicename, xml);
 					if(register == false){
 						result = "<failure> Register to SSH failed! </failure>";
 					}
