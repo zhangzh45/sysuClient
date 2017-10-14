@@ -1162,8 +1162,8 @@
 				}
 				
 				//if(app.type == 'URL'){
-				if(!app.hasOwnProperty("params") && !app.hasOwnProperty("vars") && !app.hasOwnProperty("subparams")){
-					var serviceurl = "http://localhost:8020/SSH_Prototype_J2EE_5.0/accessService.jsp?userid="+app.userid+"&serviceid="+appid+"&serviceaddress="+serviceaddress;
+				if(!app.hasOwnProperty("params") && !app.hasOwnProperty("vars")){
+					var serviceurl = "http://localhost:8080/SSH_Prototype_J2EE_5.0/accessService.jsp?userid="+app.userid+"&serviceid="+appid+"&serviceaddress="+serviceaddress;
 				
 					//alert(serviceurl);
 					footer.append("<button class='btn btn-primary' onClick='window.open(\""+ serviceurl +"\")'>点击调用</button>");			
@@ -1189,13 +1189,13 @@
 	
 						}
 					}
-					if(app.hasOwnProperty("subparams")){
+					/*if(app.hasOwnProperty("subparams")){
 						var subparams = JSON.parse(app.subparams);
 						for (var key in subparams) {
 							formgroup.append("<label class='col-sm-2 control-label'>"+ key +"</label>");
 							formgroup.append("<div class='col-sm-10'><input type='text' name='"+ key +"' class='form-control'><span class='help-block'>ParamType: "+ subparams[key] +"</span></div>");
 						}
-					}
+					}*/
 					form.append(formgroup);
 					
 					body.append(form);
@@ -1232,7 +1232,7 @@
 			success	:	function(resultJson) {
 				var result = JSON.parse(resultJson);
 				//alert(result.userid+"  "+appid+"   "+appurl+"   "+result.params);
-				var accessurl = "http://localhost:8020/SSH_Prototype_J2EE_5.0/accessService.jsp?userid="+result.userid+"&serviceid="+appid+"&serviceaddress="+appurl+"?"+result.params;
+				var accessurl = "http://localhost:8080/SSH_Prototype_J2EE_5.0/accessService.jsp?userid="+result.userid+"&serviceid="+appid+"&serviceaddress="+appurl+"?"+result.params;
 				//alert(accessurl);
 				window.open(accessurl);
 				
