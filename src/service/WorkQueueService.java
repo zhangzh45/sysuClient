@@ -190,7 +190,7 @@ public class WorkQueueService{
 			try {
 				
 				String result = wqAdapter.updateWorkItemData(itemID, dataString, _handle);
-				
+				System.out.println("dataString:"+dataString);
 				System.out.println("update:"+result+";"+wqAdapter.getWorkItem(itemID, _handle));
 				
 			} catch (IOException e) {
@@ -207,6 +207,8 @@ public class WorkQueueService{
 			try {
 				
 				wqAdapter.completeItem(pa.getID(), selectedItem, _handle);
+				System.out.println("selectedItem:" + selectedItem);
+				System.out.println("_handle:" + _handle);
 				
 			} catch (IOException e) {
 				e.printStackTrace();

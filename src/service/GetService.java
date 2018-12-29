@@ -32,7 +32,7 @@ import net.sf.json.JSONObject;
 public class GetService {
 		 private static  String result;
 		 //调用的服务端的地址
-	     private  String endpoint = "http://127.0.0.1:8080/SSH_Prototype_J2EE_5.0/GetServiceInfoPort?wsdl";
+	     private  String endpoint = "http://127.0.0.1:8090/SSH_Prototype_J2EE_5.0/GetServiceInfoPort?wsdl";
 	     
 	     public  String getAvailableServiceList(int userid ) {//my service list
 		  // TODO Auto-generated method stub

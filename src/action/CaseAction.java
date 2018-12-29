@@ -119,7 +119,7 @@ public class CaseAction extends ActionSupport {
 					for(String caseid: cases){
 						Map<String, String> m = new HashMap<String, String>();
 						m.put("id", caseid);
-						m.put("specname", s.getName());
+						m.put("specname", s.getSpecURI());//name为null，因此暂时取uri的值
 						m.put("specversion", s.getSpecVersion());
 						m.put("specuri", s.getSpecURI());
 						m.put("specidentifier", s.getID().getIdentifier());

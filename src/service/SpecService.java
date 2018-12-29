@@ -17,7 +17,7 @@ import java.util.Set;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.json.JSONArray;
 import org.yawlfoundation.yawl.elements.data.YParameter;
 import org.yawlfoundation.yawl.engine.YSpecificationID;

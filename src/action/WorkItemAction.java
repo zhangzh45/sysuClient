@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.jdom.Element;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import org.jdom2.Element;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.json.JSONObject;
 import org.yawlfoundation.yawl.elements.data.YParameter;
 import org.yawlfoundation.yawl.engine.interfce.WorkItemRecord;
@@ -63,6 +63,7 @@ public class WorkItemAction extends ActionSupport{
 	}
 	
 	public String complete() {
+		System.out.println("complete:" + complete);
 		if (selectedItem != null)
 			workQueueService.complete((String)session.get("userid"), selectedItem);
 		items = workQueueService.getWorkQueue((String) session.get("userid"), "started");
@@ -169,6 +170,7 @@ public class WorkItemAction extends ActionSupport{
 		Element wirData = selectedWir.getUpdatedData() != null ? selectedWir.getUpdatedData() : selectedWir.getDataList();
 		if (wirMap != null) {
 			for (String param : wirMap.keySet()) {
+				System.out.println("param:"+param);
 				Element e = wirData.getChild(param);
 				if (e == null) {
 					e = new Element(param);
@@ -177,6 +179,7 @@ public class WorkItemAction extends ActionSupport{
 				} else {
 					e.setText(wirMap.get(param));
 				}
+				System.out.println("value:"+e.getText());
 			}
 		}
 		workQueueService.update(selectedItem, new XMLOutputter(Format.getCompactFormat()).outputString(wirData));

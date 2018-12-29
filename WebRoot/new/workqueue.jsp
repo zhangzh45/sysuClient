@@ -1163,7 +1163,7 @@
 				
 				//if(app.type == 'URL'){
 				if(!app.hasOwnProperty("params") && !app.hasOwnProperty("vars")){
-					var serviceurl = "http://localhost:8080/SSH_Prototype_J2EE_5.0/accessService.jsp?userid="+app.userid+"&serviceid="+appid+"&serviceaddress="+serviceaddress;
+					var serviceurl = "http://localhost:8090/SSH_Prototype_J2EE_5.0/accessService.jsp?userid="+app.userid+"&serviceid="+appid+"&serviceaddress="+serviceaddress;
 				
 					//alert(serviceurl);
 					footer.append("<button class='btn btn-primary' onClick='window.open(\""+ serviceurl +"\")'>点击调用</button>");			
@@ -1232,7 +1232,7 @@
 			success	:	function(resultJson) {
 				var result = JSON.parse(resultJson);
 				//alert(result.userid+"  "+appid+"   "+appurl+"   "+result.params);
-				var accessurl = "http://localhost:8080/SSH_Prototype_J2EE_5.0/accessService.jsp?userid="+result.userid+"&serviceid="+appid+"&serviceaddress="+appurl+"?"+result.params;
+				var accessurl = "http://localhost:8090/SSH_Prototype_J2EE_5.0/accessService.jsp?userid="+result.userid+"&serviceid="+appid+"&serviceaddress="+appurl+"?"+result.params;
 				//alert(accessurl);
 				window.open(accessurl);
 				
